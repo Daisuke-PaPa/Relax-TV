@@ -132,47 +132,49 @@
     const ytContainer = document.getElementById('youtube-iframe-container');
     const sound = document.getElementById('btn-sound');
 
-    btn.addEventListener('click', () => {
-      // play click sound immediately (user gesture)
-      sound.currentTime = 0;
-      sound.play().catch(()=>{/* ignore if blocked */});
+btn.addEventListener('click', () => {
+  // Enter full screen for the whole page
+  const docEl = document.documentElement;
+  if (docEl.requestFullscreen) {
+    docEl.requestFullscreen();
+  } else if (docEl.webkitRequestFullscreen) { // Safari
+    docEl.webkitRequestFullscreen();
+  } else if (docEl.msRequestFullscreen) { // IE/Edge
+    docEl.msRequestFullscreen();
+  }
 
-      // show static on top for 1.5s
-      staticImg.style.display = 'block';
+  // Play click sound
+  sound.currentTime = 0;
+  sound.play().catch(()=>{});
 
-      // ensure iframe container is prepared (but keep it below static)
-      ytContainer.style.display = 'block';
-      ytContainer.style.pointerEvents = 'none'; // disable until static hides
+  // Show static
+  staticImg.style.display = 'block';
+  staticImg.style.zIndex = 4;
 
-      const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
+  // Disable iframe while static shows
+  ytContainer.style.pointerEvents = 'none';
+  ytContainer.style.display = 'block';
+  ytContainer.style.zIndex = 3;
 
-      // If player ready use loadVideoById politely (player exists inside the container)
-      if (playerReady && player && player.loadVideoById) {
-        // Load video now (still in click handler, helps autoplay permission)
-        try {
-          player.loadVideoById({ videoId: randomId, startSeconds: 0 });
-          player.playVideo();
-        } catch (e) {
-          // ignore — API might not accept immediate play in some browsers
-        }
-      } else {
-        // fallback — inject iframe directly (created during user gesture)
-        ytContainer.innerHTML = `<iframe
-          src="https://www.youtube.com/embed/${randomId}?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1"
-          width="100%" height="100%" frameborder="0"
-          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-          allowfullscreen></iframe>`;
-      }
+  const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
 
-      // after static duration, hide static and allow interactions with iframe
-      setTimeout(() => {
-        staticImg.style.display = 'none';
-        // enable interactions on iframe
-        ytContainer.style.pointerEvents = 'auto';
-        // raise iframe above tv but below overlay (if you want iframe above overlay, adjust z-index)
-        ytContainer.style.zIndex = 4; // same layer as static had; overlay_darkness is z-index 5
-      }, 1500);
-    });
+  setTimeout(() => {
+    staticImg.style.display = 'none';
+    ytContainer.style.pointerEvents = 'auto';
+    ytContainer.style.zIndex = 4;
+
+    if (playerReady && player && player.loadVideoById) {
+      player.loadVideoById({ videoId: randomId, startSeconds: 0 });
+      player.playVideo();
+    } else {
+      ytContainer.innerHTML = `<iframe
+        src="https://www.youtube.com/embed/${randomId}?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1"
+        width="100%" height="100%" frameborder="0"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+        allowfullscreen></iframe>`;
+    }
+  }, 1500);
+});
   </script>
 </body>
 </html>
