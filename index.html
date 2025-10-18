@@ -18,63 +18,165 @@
     width: min(80vw, 1280px, 100vw);
     aspect-ratio: 1280 / 720;
   }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
 
-  #tv { width: 100%; height: 100%; display: block; }
+/* === TV CONTAINER === */
+.tv-container {
+  position: relative;
+  width: min(80vw, 1280px, 100vw);
+  aspect-ratio: 1280 / 720;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  /* STATIC: exact placement/size */
-  #static {
-    position: absolute;
-    left: calc(214 / 1280 * 100%);
-    top:  calc(104 / 720  * 100%);
-    width: calc(840 / 1280 * 100%);
-    aspect-ratio: 840 / 473;    /* gives a computed height */
-    max-width: 840px;
-    max-height: 473px;
-    display: none;              /* shown temporarily on click */
-    pointer-events: none;
-    z-index: 4;                 /* above iframe while visible */
-  }
+/* === TV BASE === */
+#tv {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-  /* IFRAME CONTAINER: separate element, same sizing as static */
-  #youtube-iframe-container {
-    position: absolute;
-    left: calc(214 / 1280 * 100%);
-    top:  calc(104 / 720  * 100%);
-    width: calc(840 / 1280 * 100%);
-    aspect-ratio: 840 / 473;    /* IMPORTANT: compute height from width */
-    max-width: 840px;
-    max-height: 473px;
-    display: none;              /* hidden until video loads */
-    pointer-events: none;       /* enable later once static hides */
-    z-index: 3;                 /* below static while static visible */
-    overflow: hidden;
-  }
+/* === STATIC IMAGE === */
+#static {
+  position: absolute;
+  left: calc(214 / 1280 * 100%);
+  top: calc(104 / 720 * 100%);
+  width: calc(840 / 1280 * 100%);
+  aspect-ratio: 840 / 473;
+  max-width: 840px;
+  max-height: 473px;
+  display: none;
+  pointer-events: none;
+  z-index: 4;
+}
 
-  /* The YT API will inject an iframe inside this div; make it fill the container */
-  #youtube-iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    display: block;
-  }
+/* === YOUTUBE CONTAINER === */
+#youtube-iframe-container {
+  position: absolute;
+  left: calc(214 / 1280 * 100%);
+  top: calc(104 / 720 * 100%);
+  width: calc(840 / 1280 * 100%);
+  aspect-ratio: 840 / 473;
+  max-width: 840px;
+  max-height: 473px;
+  display: none;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
 
-  #overlay_darkness {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: contain; pointer-events: none;
-    z-index: 5;
-  }
+#youtube-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
 
-  /* hidden trigger area */
-  #hidden-btn {
-    position: absolute;
-    left: calc(673 / 1280 * 100%);
-    top:  calc(600 / 720  * 100%);
-    width: calc(299 / 1280 * 100%);
-    height: calc(74 / 720 * 100%);
-    background: transparent; border: none; cursor: pointer;
-    z-index: 6;
-  }
+/* === DARK OVERLAY === */
+#overlay_darkness {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* === HIDDEN BUTTON (TV BUTTON) === */
+#hidden-btn {
+  position: absolute;
+  left: calc(673 / 1280 * 100%);
+  top: calc(600 / 720 * 100%);
+  width: calc(299 / 1280 * 100%);
+  height: calc(74 / 720 * 100%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 6;
+}
+
+/* === INFO BUTTON (Top-right corner, not breaking layout) === */
+#info-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s ease;
+}
+
+#info-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* === INFO MODAL === */
+#info-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.info-box {
+  background: rgba(20,20,20,0.95);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 80%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  animation: fadeIn 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -84,45 +186,42 @@
     <img src="overlay_darkness.png" id="overlay_darkness" alt="Overlay Darkness">
     <button id="hidden-btn" aria-label="hidden trigger"></button>
 
-    <!-- separate container for the iframe, identical to static's sizing -->
     <div id="youtube-iframe-container">
       <div id="youtube-iframe"></div>
+    </div>
+
+    <!-- Info button -->
+    <button id="info-btn">i</button>
+  </div>
+
+  <!-- Floating modal -->
+  <div id="info-modal">
+    <div class="info-box">
+      <button class="close-btn">✖</button>
+      <h2>Relax TV</h2>
+      <p>I hope this little TV ease you from your pains.<br>
+       Want your video to be in this TV?<br>
+       Feel free to submit it! --> <a href="https://docs.google.com/forms/d/15cj9vt57gkhbUsYBVvlY-d1aV7HDKv2-34KbpvcsF6g">Google Form</a><br>
+       Made with ❤️ by <strong><a href="https://that-game-dev.itch.io/">That Game Developer</a></strong>.</p>
+       <h2>Credits</h2>
+       TV Sprites : Me<br>
+       Code : ChatGPT<br>
+       Button Press by DRAGON-STUDIO : <a href="https://pixabay.com/sound-effects/button-press-382713/">Pixabay Link</a>
     </div>
   </div>
 
   <audio id="btn-sound" src="button-press-382713.mp3"></audio>
-
-  <!-- YouTube Iframe API -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    let player;
-    let playerReady = false;
+    let player, playerReady = false;
+    const videoIds = ["NAcJZCDWK2I", "FDe0wm9Faic", "lYBRwWQTnJE", "MOwSaNwHJUI", "mGKjPD_BNAE", "fzQ6gRAEoy0", "Fve_lHIPa-I", "gGVnWCHLo08", "bjPac7swVcw", "Kk2k0PMEQrw", "R9WZujjBTLs", "OEL0uphMZy8", "3i7RDf48L4U", "1B7XAKt085E", "ol-FduC0t6s", "a6nmtJAC4NM", "40dJS_LC6S8", "j35zChYxQW8", "LpNVf8sczqU", "RjhLcPQ2EWg", "TfZUcD7mwck", "JoNqnn_goFE", "lrx84N0lSs8", "Jzxi8nid9BQ", "0N1_0SUGlDQ", "yaOPeyTI3QQ", "KxQhd0oilCU", "IvUU8joBb1Q", "HmoUSSVSV7I", "FqJdzYY_Fas", "CwzjlmBLfrQ", "XKRrfAzdpW8", "y-H21r5rGig", "dx76YPgZviE", "FtutLA63Cp8", "LFiNdkt5634", "ixh-p7ximVo", "fmrA-gxJxgQ", "fVtxsDQ2ja4", "PEwCB_ci7nE", "fzDZrPZ8s5c", "p--GfVXfNa0", "W85F-UmnbF4", "ZUJJdeByJa0", "Akwm2UZJ34o", "C1ObitoLwhM", "J_VbCPHAz2M", "m5LjA0gjeX8", "u0wGWliC-I0", "_EbnC0O3_oU", "t_H2uQ7BBIA", "Ct6BUPvE2sM", "tVoKUqlGdh4", "GtWCtIIsfeg", "YnopHCL1Jk8", "LACbVhgtx9I", "IJNR2EpS0jw", "KciUxomsmeQ", "EYGGd2NKwtI", "vTVUCYyVdSY", "IxX_QHay02M", "cE0wfjsybIQ", "qthxa7m_B4E", "2yJgwwDcgV8", "v1K4EAXe2oo", "a-EI30uucng", "ZA4m25i43Bw", "0CFBUSHzENI", "rb8z2BMrd60", "c7BVtGnlxT8", "PG5mt0p30FY", "TKNeu63cWR4", "EkNynn4yTh0", "JCtL7t94Y9k", "SfT4FMkh1-w", "BMvqvnyGtGo", "9JRLCBb7qK8", "BdOtR2A5agc", "AiosKUO7oqo", "DJfg39WkMvE", "MMy7KXZPpyw", "DKc2-1E-M2E", "f7Yp4bSUTng", "K4HWiCqw1jE", "5fQIMcZtYtk", "o0jFloPfVao", "3uJ4O-evw6o", "F5GjEwI8wEA", "bcoPG0oSqPI", "qE6mruRB1PA", "FZSkFLJx4fE", "dxiE9OqJ2Sc", "3nlSDxvt6JU", "On_ZA4RNfyU", "OIzZR8q_oBk", "ecRRxehRIDo", "1bsd8fFmTAo", "3-kI9rDwQ8E", "y35KNZUq7zo", "iIgh_mjA5Bs", "oKlvEuPuYCc", "rakvy6btB2c", "S1kG5xjCd7Q", "qQEtaBCQlvU", "-m1MmPEDzqA", "JnwIaKsHTSU"];
 
-    const videoIds = ["NAcJZCDWK2I", "FDe0wm9Faic", "lYBRwWQTnJE", "MOwSaNwHJUI", "mGKjPD_BNAE", "fzQ6gRAEoy0", "Fve_lHIPa-I", "gGVnWCHLo08", "bjPac7swVcw", "Kk2k0PMEQrw", "R9WZujjBTLs", "OEL0uphMZy8", "3i7RDf48L4U", "1B7XAKt085E", "ol-FduC0t6s", "a6nmtJAC4NM", "40dJS_LC6S8", "j35zChYxQW8", "LpNVf8sczqU", "RjhLcPQ2EWg", "TfZUcD7mwck", "JoNqnn_goFE", "lrx84N0lSs8", "Jzxi8nid9BQ", "0N1_0SUGlDQ", "yaOPeyTI3QQ", "KxQhd0oilCU", "IvUU8joBb1Q", "HmoUSSVSV7I", "FqJdzYY_Fas", "CwzjlmBLfrQ", "XKRrfAzdpW8", "y-H21r5rGig", "dx76YPgZviE", "FtutLA63Cp8", "LFiNdkt5634", "ixh-p7ximVo", "fmrA-gxJxgQ", "fVtxsDQ2ja4", "PEwCB_ci7nE", "fzDZrPZ8s5c", "p--GfVXfNa0", "W85F-UmnbF4", "ZUJJdeByJa0", "Akwm2UZJ34o", "C1ObitoLwhM", "J_VbCPHAz2M", "m5LjA0gjeX8", "u0wGWliC-I0", "_EbnC0O3_oU", "t_H2uQ7BBIA", "Ct6BUPvE2sM", "tVoKUqlGdh4", "GtWCtIIsfeg", "YnopHCL1Jk8", "LACbVhgtx9I", "IJNR2EpS0jw", "KciUxomsmeQ", "EYGGd2NKwtI", "vTVUCYyVdSY", "IxX_QHay02M", "cE0wfjsybIQ", "qthxa7m_B4E", "2yJgwwDcgV8", "v1K4EAXe2oo", "a-EI30uucng", "ZA4m25i43Bw", "0CFBUSHzENI", "rb8z2BMrd60", "c7BVtGnlxT8", "PG5mt0p30FY", "TKNeu63cWR4", "EkNynn4yTh0", "JCtL7t94Y9k", "SfT4FMkh1-w", "BMvqvnyGtGo", "9JRLCBb7qK8", "BdOtR2A5agc", "AiosKUO7oqo", "DJfg39WkMvE"];
-
-    // Called by YT API
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('youtube-iframe', {
-        width: '100%',
-        height: '100%',
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1
-        },
+        width: '100%', height: '100%',
+        playerVars: { autoplay:0, controls:0, rel:0, modestbranding:1, playsinline:1 },
         events: {
-          onReady: (e) => {
-            playerReady = true;
-            // add allow attributes to the injected iframe for nicer console messages
-            try {
-              const f = player.getIframe();
-              if (f) {
-                f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen; magnetometer; gyroscope; clipboard-write; web-share');
-              }
-            } catch (err) { /* ignore */ }
-          }
+          onReady: (e) => { playerReady = true; }
         }
       });
     }
@@ -132,49 +231,59 @@
     const ytContainer = document.getElementById('youtube-iframe-container');
     const sound = document.getElementById('btn-sound');
 
-btn.addEventListener('click', () => {
-  // Enter full screen for the whole page
-  const docEl = document.documentElement;
-  if (docEl.requestFullscreen) {
-    docEl.requestFullscreen();
-  } else if (docEl.webkitRequestFullscreen) { // Safari
-    docEl.webkitRequestFullscreen();
-  } else if (docEl.msRequestFullscreen) { // IE/Edge
-    docEl.msRequestFullscreen();
-  }
+    btn.addEventListener('click', () => {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) docEl.requestFullscreen();
+      else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
 
-  // Play click sound
-  sound.currentTime = 0;
-  sound.play().catch(()=>{});
+      sound.currentTime = 0;
+      sound.play().catch(()=>{});
 
-  // Show static
-  staticImg.style.display = 'block';
-  staticImg.style.zIndex = 4;
+      staticImg.style.display = 'block';
+      staticImg.style.zIndex = 4;
 
-  // Disable iframe while static shows
-  ytContainer.style.pointerEvents = 'none';
-  ytContainer.style.display = 'block';
-  ytContainer.style.zIndex = 3;
+      ytContainer.style.pointerEvents = 'none';
+      ytContainer.style.display = 'block';
+      ytContainer.style.zIndex = 3;
 
-  const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
+      const randomId = videoIds[Math.floor(Math.random() * videoIds.length)];
 
-  setTimeout(() => {
-    staticImg.style.display = 'none';
-    ytContainer.style.pointerEvents = 'auto';
-    ytContainer.style.zIndex = 4;
+      setTimeout(() => {
+        staticImg.style.display = 'none';
+        ytContainer.style.pointerEvents = 'auto';
+        ytContainer.style.zIndex = 4;
 
-    if (playerReady && player && player.loadVideoById) {
-      player.loadVideoById({ videoId: randomId, startSeconds: 0 });
-      player.playVideo();
-    } else {
-      ytContainer.innerHTML = `<iframe
-        src="https://www.youtube.com/embed/${randomId}?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1"
-        width="100%" height="100%" frameborder="0"
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-        allowfullscreen></iframe>`;
-    }
-  }, 700);
-});
+        if (playerReady && player && player.loadVideoById) {
+          player.loadVideoById({ videoId: randomId, startSeconds: 0 });
+          player.playVideo();
+        } else {
+          ytContainer.innerHTML = `<iframe
+            src="https://www.youtube.com/embed/${randomId}?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen></iframe>`;
+        }
+      }, 700);
+    });
+
+    // === Info Modal Logic ===
+    const infoBtn = document.getElementById('info-btn');
+    const modal = document.getElementById('info-modal');
+    const closeBtn = modal.querySelector('.close-btn');
+
+    infoBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>
